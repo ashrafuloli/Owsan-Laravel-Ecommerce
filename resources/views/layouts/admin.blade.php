@@ -33,9 +33,12 @@
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-th-large"></i>
-                </a>
+                <form action="{{ route('logout') }}" class="d-inline-block" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
             </li>
         </ul>
     </nav>
@@ -54,37 +57,38 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                     data-accordion="false">
-                    <li class="nav-item has-treeview menu-open">
-                        <a href="#" class="nav-link active">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>{{ __('Dashboard') }}</p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview {{ request()->routeIs('admin.product-category.*') ? 'menu-open' : '' }}">
+                        <a href="#"
+                           class="nav-link {{ request()->routeIs('admin.product-category.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-tachometer-alt"></i>
                             <p>
-                                Starter Pages
+                                Category
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="#" class="nav-link active">
+                                <a href="{{ route('admin.product-category.index') }}"
+                                   class="nav-link {{ request()->routeIs('admin.product-category.index') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Active Page</p>
+                                    <p>All Categories</p>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="{{ route('admin.product-category.create') }}"
+                                   class="nav-link {{ request()->routeIs('admin.product-category.create') ? 'active' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Inactive Page</p>
+                                    <p>Add New</p>
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">
-                            <i class="nav-icon fas fa-th"></i>
-                            <p>
-                                Simple Link
-                                <span class="right badge badge-danger">New</span>
-                            </p>
-                        </a>
                     </li>
                 </ul>
             </nav>

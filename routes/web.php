@@ -17,14 +17,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::namespace('Auth')->group(function (){
+Route::namespace('Auth')->group(function () {
     Route::get('/login', 'LoginController@login_page')->name('login-form');
     Route::post('/login', 'LoginController@process_login')->name('login');
+
+    Route::post('/logout', 'LogoutController@logout')->name('logout')->middleware('auth');
 });
 
-Route::prefix('admin')->namespace('Admin')->group(function (){
-    Route::middleware('auth')->group(function (){
+Route::prefix('admin')->name('admin.')->namespace('Admin')->group(function () {
+    Route::middleware('auth')->group(function () {
         Route::get('/', 'DashboardController@index')->name('dashboard');
         Route::get('/dashboard', 'DashboardController@index');
+
+        Route::resource('product-category', 'ProductCategoryController');
     });
 });
