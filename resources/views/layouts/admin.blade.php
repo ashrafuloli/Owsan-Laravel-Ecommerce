@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ asset('assets/backend/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('assets/backend/css/adminlte.min.css') }}">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{{ asset('assets/backend/plugins/summernote/summernote-bs4.css') }}">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -99,20 +101,8 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-md-12">
-                        <h1 class="m-0 text-dark">@yield('title', __('Dashboard'))</h1>
-                    </div><!-- /.col -->
-                </div><!-- /.row -->
-            </div><!-- /.container-fluid -->
-        </div>
-        <!-- /.content-header -->
-
         <!-- Main content -->
-        <div class="content">
+        <div class="content pt-3">
             <div class="container-fluid">
                 @yield('content')
             </div><!-- /.container-fluid -->
@@ -139,6 +129,52 @@
 <script src="{{ asset('js/app.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('assets/backend/js/adminlte.min.js') }}"></script>
+<!-- summernote -->
+<script src="{{ asset('assets/backend/plugins/summernote/summernote-bs4.min.js') }}"></script>
+<!-- bs-custom-file-input -->
+<script src="{{ asset('assets/backend/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+
+<script>
+    $(document).ready(function () {
+        // text-editor
+        $('.text-editor').summernote({
+            height: 300,
+            toolbar: [
+                ['style', ['style', 'bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['view', ['fullscreen', 'codeview']],
+            ],
+            styleTags: [
+                'p', {
+                    title: 'Blockquote',
+                    tag: 'blockquote',
+                    className: 'blockquote',
+                    value: 'blockquote'
+                }, 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
+            ],
+        });
+
+        // file-upload
+        bsCustomFileInput.init();
+
+        // sweet-alert-2
+        @if(session()->has('success'))
+        toaster("success", "{{ session()->get('success') }}")
+        @endif
+
+        @if(session()->has('warning'))
+        toaster("warning", "{{ session()->get('warning') }}")
+        @endif
+
+        @if(session()->has('error'))
+        toaster("error", "{{ session()->get('error') }}")
+        @endif
+    });
+</script>
 @yield('scripts')
 </body>
 </html>

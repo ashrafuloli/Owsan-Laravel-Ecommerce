@@ -32,6 +32,7 @@
                     <input type="text" class="input" name="email">
                 </div>
             </div>
+
             @error('email')
             <span style="color: red;"> {{ $message }}</span>
             @enderror
