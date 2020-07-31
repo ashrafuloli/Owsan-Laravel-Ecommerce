@@ -8,9 +8,20 @@
             <div class="card card-dark">
                 <div class="card-header">
                     <h5 class="d-inline-block mt-2">{{ __('All product categories') }}</h5>
-                    <a href="{{ route('admin.product-category.create') }}" class="float-right btn btn-primary">{{ __('Add New') }}</a>
+                    <a href="{{ route('admin.product-category.create') }}"
+                       class="float-right btn btn-primary">{{ __('Add New') }}</a>
                 </div>
                 <div class="card-body">
+
+                    <div class="btn-group mb-3">
+                        <a href="{{ route('admin.product-category.index') . '?type=all' }}"
+                           class="btn btn-outline-dark {{ request()->get('type') == 'all' ? 'active' : '' }}">{{ __('All') }}</a>
+                        <a href="{{ route('admin.product-category.index') }}"
+                           class="btn btn-outline-dark {{ request()->has('type') == '' ? 'active' : '' }}">{{ __('Active') }}</a>
+                        <a href="{{ route('admin.product-category.index') . '?type=trash' }}"
+                           class="btn btn-outline-dark {{ request()->get('type') == 'trash' ? 'active' : '' }}">{{ __('Trashed')}}</a>
+                    </div>
+
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -28,15 +39,17 @@
                                 <td>{{ $productCategory->id }}</td>
                                 <td>
                                     @if($productCategory->thumbnail)
-                                        <img src="{{ asset($productCategory->thumbnail) }}" style="width: 80px;">
+                                        <img src="{{ asset($productCategory->thumbnail) }}"
+                                             alt="{{ asset($productCategory->name) }}" style="width: 80px;">
                                     @else
-                                    <img src="http://placehold.jp/80x80.png" style="width: 80px;">
+                                        <img src="http://placehold.jp/80x80.png" style="width: 80px;">
                                     @endif
                                 </td>
                                 <td>{{ $productCategory->name }}</td>
                                 <td>{{ $productCategory->slug }}</td>
                                 <td>
-                                    <div class="badge badge-@if($productCategory->status == true ){{'success'}}@else{{'warning'}} @endif">
+                                    <div
+                                        class="badge badge-@if($productCategory->status == true ){{'success'}}@else{{'warning'}} @endif">
                                         {{ $productCategory->status_text }}
                                     </div>
                                 </td>
@@ -45,8 +58,12 @@
                                        class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a>
                                     <a href="{{ route('admin.product-category.edit', $productCategory->id) }}"
                                        class="btn btn-sm btn-info"><i class="far fa-edit"></i></a>
-                                    <a href="{{ route('admin.product-category.destroy', $productCategory->id ) }}"
-                                       class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>
+                                    <form action="{{ route('admin.product-category.destroy', $productCategory->id ) }}"
+                                          method="POST" class="d-inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
                                 </td>
                             </tr>
                         @endforeach

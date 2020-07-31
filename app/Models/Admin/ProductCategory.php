@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed description
  * @property mixed name
  * @property mixed|string slug
+ * @property mixed status
  * @method static whereSlug(string $uniqueSlug)
  * @method input(string $string)
  */
