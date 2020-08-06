@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\Admin\ProductCategory;
+use \App\Models\Admin\Brand;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,8 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        File::deleteDirectory(public_path('uploads/images'));
         // $this->call(UserSeeder::class);
         $this->call(UserSeeder::class);
-        factory(ProductCategory::class, 5)->create();
+        factory(ProductCategory::class, 15)->create();
+        factory(Brand::class, 5)->create();
     }
 }
