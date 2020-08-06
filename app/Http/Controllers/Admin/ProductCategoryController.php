@@ -13,7 +13,7 @@ class ProductCategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Application|Factory|View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @noinspection PhpUndefinedMethodInspection
      */
     public function index()
@@ -31,7 +31,7 @@ class ProductCategoryController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Application|Factory|View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
@@ -42,7 +42,7 @@ class ProductCategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -82,18 +82,18 @@ class ProductCategoryController extends Controller
      * Display the specified resource.
      *
      * @param ProductCategory $productCategory
-     * @return void
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View|void
      */
     public function show(ProductCategory $productCategory)
     {
-        //
+        return view('admin.product-category.show', compact('productCategory'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param ProductCategory $productCategory
-     * @return Application|Factory|View
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit(ProductCategory $productCategory)
     {
@@ -105,7 +105,7 @@ class ProductCategoryController extends Controller
      *
      * @param Request $request
      * @param ProductCategory $productCategory
-     * @return RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, ProductCategory $productCategory)
     {
@@ -161,13 +161,83 @@ class ProductCategoryController extends Controller
      * Remove the specified resource from storage.
      *
      * @param ProductCategory $productCategory
-     * @return void
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
      */
     public function destroy(ProductCategory $productCategory)
     {
         if ($productCategory->delete()) {
-            return redirect()->route('admin.product-category.index')->with('success', __('Product category Deleted.'));
+            return redirect()->back()->with('success', __('Product category Deleted.'));
         }
         return redirect()->back()->with('error', __('Please try again.'));
+    }
+
+    public function restore($id)
+    {
+        $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
+        if($productCategory){
+            if ($productCategory->restore()) {
+                return redirect()->back()->with('success', __('Product category restored.'));
+            }
+            return redirect()->back()->with('error', __('Please try again.'));
+        }
+        return redirect()->back()->with('error', __('No product to restore.'));
+    }
+
+    public function force_delete($id)
+    {
+        $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
+        if($productCategory){
+            if ($productCategory->thumbnail){
+                File::delete($productCategory->thumbnail);
+            }
+            if ($productCategory->forceDelete()) {
+                return redirect()->back()->with('success', __('Product category permanently deleted.'));
+            }
+            return redirect()->back()->with('error', __('Please try again.'));
+        }
+        return redirect()->back()->with('error', __('No product to delete.'));
+    }
+
+    public function bulk_delete( Request $request ) {
+        $item_ids = $request->input( 'item_ids' );
+        foreach ( $item_ids as $id ) {
+            $productCategory = ProductCategory::find( $id );
+            if ( $productCategory ) {
+                $productCategory->delete();
+            }
+        }
+        return response()->json( [
+            'message' => 'success',
+        ] );
+    }
+
+    public function bulk_force_delete( Request $request ) {
+        $item_ids = $request->input( 'item_ids' );
+        foreach ( $item_ids as $id ) {
+            $productCategory = ProductCategory::withTrashed()->find( $id );
+            if ( $productCategory ) {
+                if ( $productCategory->thumbnail ) {
+                    File::delete( $productCategory->thumbnail );
+                }
+                $productCategory->forceDelete();
+            }
+        }
+        return response()->json( [
+            'message' => 'success',
+        ] );
+    }
+
+    public function bulk_restore( Request $request ) {
+        $item_ids = $request->input( 'item_ids' );
+        foreach ( $item_ids as $id ) {
+            $productCategory = ProductCategory::withTrashed()->find( $id );
+            if ( $productCategory ) {
+                $productCategory->restore();
+            }
+        }
+        return response()->json( [
+            'message' => 'success',
+        ] );
     }
 }

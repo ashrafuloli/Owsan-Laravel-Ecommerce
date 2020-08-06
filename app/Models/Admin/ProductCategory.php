@@ -32,4 +32,13 @@ class ProductCategory extends Model
     {
         $this->attributes['thumbnail'] = 'uploads/images/product-categories/' . $value;
     }
+
+    public function getDefaultThumbnailAttribute()
+    {
+        if ($this->thumbnail == null){
+            return 'assets/150.jpg';
+        }
+
+        return $this->thumbnail;
+    }
 }

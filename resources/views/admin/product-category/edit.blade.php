@@ -40,9 +40,7 @@
                             </div>
                             <div class="col-xl-2">
                                 <div class="form-group text-right">
-                                    @if($productCategory->thumbnail)
-                                        <img src="{{ asset($productCategory->thumbnail) }}" alt="{{ asset($productCategory->name) }}" style="width: 80px;">
-                                    @endif
+                                    <img src="{{ asset($productCategory->default_thumbnail) }}" alt="{{ asset($productCategory->name) }}" style="width: 80px;">
                                 </div>
                             </div>
                         </div>
