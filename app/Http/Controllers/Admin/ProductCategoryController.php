@@ -175,7 +175,7 @@ class ProductCategoryController extends Controller
     public function restore($id)
     {
         $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
-        if($productCategory){
+        if ($productCategory) {
             if ($productCategory->restore()) {
                 return redirect()->back()->with('success', __('Product category restored.'));
             }
@@ -187,8 +187,8 @@ class ProductCategoryController extends Controller
     public function force_delete($id)
     {
         $productCategory = ProductCategory::onlyTrashed()->findOrFail($id);
-        if($productCategory){
-            if ($productCategory->thumbnail){
+        if ($productCategory) {
+            if ($productCategory->thumbnail) {
                 File::delete($productCategory->thumbnail);
             }
             if ($productCategory->forceDelete()) {
@@ -199,45 +199,78 @@ class ProductCategoryController extends Controller
         return redirect()->back()->with('error', __('No product to delete.'));
     }
 
-    public function bulk_delete( Request $request ) {
-        $item_ids = $request->input( 'item_ids' );
-        foreach ( $item_ids as $id ) {
-            $productCategory = ProductCategory::find( $id );
-            if ( $productCategory ) {
+    public function bulk_delete(Request $request)
+    {
+        $item_ids = $request->input('item_ids');
+        foreach ($item_ids as $id) {
+            $productCategory = ProductCategory::find($id);
+            if ($productCategory) {
                 $productCategory->delete();
             }
         }
-        return response()->json( [
+        return response()->json([
             'message' => 'success',
-        ] );
+        ]);
     }
 
-    public function bulk_force_delete( Request $request ) {
-        $item_ids = $request->input( 'item_ids' );
-        foreach ( $item_ids as $id ) {
-            $productCategory = ProductCategory::withTrashed()->find( $id );
-            if ( $productCategory ) {
-                if ( $productCategory->thumbnail ) {
-                    File::delete( $productCategory->thumbnail );
+    public function bulk_force_delete(Request $request)
+    {
+        $item_ids = $request->input('item_ids');
+        foreach ($item_ids as $id) {
+            $productCategory = ProductCategory::withTrashed()->find($id);
+            if ($productCategory) {
+                if ($productCategory->thumbnail) {
+                    File::delete($productCategory->thumbnail);
                 }
                 $productCategory->forceDelete();
             }
         }
-        return response()->json( [
+        return response()->json([
             'message' => 'success',
-        ] );
+        ]);
     }
 
-    public function bulk_restore( Request $request ) {
-        $item_ids = $request->input( 'item_ids' );
-        foreach ( $item_ids as $id ) {
-            $productCategory = ProductCategory::withTrashed()->find( $id );
-            if ( $productCategory ) {
+    public function bulk_restore(Request $request)
+    {
+        $item_ids = $request->input('item_ids');
+        foreach ($item_ids as $id) {
+            $productCategory = ProductCategory::withTrashed()->find($id);
+            if ($productCategory) {
                 $productCategory->restore();
             }
         }
-        return response()->json( [
+        return response()->json([
             'message' => 'success',
-        ] );
+        ]);
+    }
+
+    public function bulk_active(Request $request)
+    {
+        $item_ids = $request->input('item_ids');
+        foreach ($item_ids as $id) {
+            $productCategory = ProductCategory::withTrashed()->find($id);
+            if ($productCategory) {
+                $productCategory->status = true;
+                $productCategory->save();
+            }
+        }
+        return response()->json([
+            'message' => 'success'
+        ]);
+    }
+
+    public function bulk_inactive(Request $request)
+    {
+        $item_ids = $request->input('item_ids');
+        foreach ($item_ids as $id) {
+            $productCategory = ProductCategory::withTrashed()->find($id);
+            if ($productCategory) {
+                $productCategory->status = false;
+                $productCategory->save();
+            }
+        }
+        return response()->json([
+            'message' => 'success'
+        ]);
     }
 }

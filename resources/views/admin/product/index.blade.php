@@ -8,7 +8,7 @@
             <div class="card card-dark">
                 <div class="card-header">
                     <h5 class="d-inline-block mt-2">{{ __('All product categories') }}</h5>
-                    <a href="{{ route('admin.product-category.create') }}"
+                    <a href="{{ route('admin.product.create') }}"
                        class="float-right btn btn-primary">{{ __('Add New') }}</a>
                 </div>
                 <div class="card-body">
@@ -35,17 +35,17 @@
                             </div>
                         </div>
                         <div class="btn-group mb-3">
-                            <a href="{{ route('admin.product-category.index') . '?type=all' }}"
+                            <a href="{{ route('admin.product.index') . '?type=all' }}"
                                class="btn btn-outline-dark {{ request()->get('type') == 'all' ? 'active' : '' }}">{{ __('All') }}</a>
-                            <a href="{{ route('admin.product-category.index') }}"
+                            <a href="{{ route('admin.product.index') }}"
                                class="btn btn-outline-dark {{ request()->has('type') == '' ? 'active' : '' }}">{{ __('Active') }}</a>
-                            <a href="{{ route('admin.product-category.index') . '?type=trash' }}"
+                            <a href="{{ route('admin.product.index') . '?type=trash' }}"
                                class="btn btn-outline-dark {{ request()->get('type') == 'trash' ? 'active' : '' }}">{{ __('Trashed')}}</a>
                         </div>
                     </div>
 
 
-                    @if(count($productCategories))
+                    @if(count($products))
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -58,28 +58,28 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($productCategories as $productCategory)
+                            @foreach($products as $product)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" class="bulk-item-id" data-id="{{ $productCategory->id }}"
+                                        <input type="checkbox" class="bulk-item-id" data-id="{{ $product->id }}"
                                                name="categories[]">
                                     </td>
                                     <td>
-                                        <img src="{{ asset($productCategory->default_thumbnail) }}"
-                                             alt="{{ asset($productCategory->name) }}" style="width: 80px;">
+                                        <img src="{{ asset($product->default_thumbnail) }}"
+                                             alt="{{ asset($product->name) }}" style="width: 80px;">
                                     </td>
-                                    <td>{{ $productCategory->name }}</td>
-                                    <td>{{ $productCategory->slug }}</td>
+                                    <td>{{ $product->title }}</td>
+                                    <td>{{ $product->slug }}</td>
                                     <td>
                                         <div
-                                            class="badge badge-@if($productCategory->status == true ){{'success'}}@else{{'warning'}} @endif">
-                                            {{ $productCategory->status_text }}
+                                            class="badge badge-@if($product->status == true ){{'success'}}@else{{'warning'}} @endif">
+                                            {{ $product->status_text }}
                                         </div>
                                     </td>
                                     <td>
-                                        @if($productCategory->deleted_at !== null)
+                                        @if($product->deleted_at !== null)
                                             <form
-                                                action="{{ route('admin.product-category.restore', $productCategory->id ) }}"
+                                                action="{{ route('admin.product.restore', $product->id ) }}"
                                                 method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('PUT')
@@ -88,7 +88,7 @@
                                             </form>
 
                                             <form
-                                                action="{{ route('admin.product-category.force_delete', $productCategory->id ) }}"
+                                                action="{{ route('admin.product.force_delete', $product->id ) }}"
                                                 method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('Delete')
@@ -98,13 +98,13 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <a href="{{ route('admin.product-category.show', $productCategory->id) }}"
+                                            <a href="{{ route('admin.product.show', $product->id) }}"
                                                class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a>
-                                            <a href="{{ route('admin.product-category.edit', $productCategory->id) }}"
+                                            <a href="{{ route('admin.product.edit', $product->id) }}"
                                                class="btn btn-sm btn-info"><i class="far fa-edit"></i></a>
 
                                             <form
-                                                action="{{ route('admin.product-category.destroy', $productCategory->id ) }}"
+                                                action="{{ route('admin.product.destroy', $product->id ) }}"
                                                 method="POST" class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
@@ -125,7 +125,7 @@
                 </div>
                 <div class="card-footer text-right">
                     <div class="d-inline-block">
-                        {{ $productCategories->links() }}
+                        {{ $products->links() }}
                     </div>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                     if ($('#dropdown-action').val() == 'bulk-delete') {
 
                         if (item_ids.length > 0) {
-                            axios.post("{{ route('admin.product-category.bulk_delete') }}", {
+                            axios.post("{{ route('admin.product.bulk_delete') }}", {
                                 item_ids
                             })
                                 .then(response => {
@@ -187,7 +187,7 @@
                     } else if ($('#dropdown-action').val() == 'bulk-force-delete') {
 
                         if (item_ids.length > 0) {
-                            axios.post("{{ route('admin.product-category.bulk_force_delete') }}", {
+                            axios.post("{{ route('admin.product.bulk_force_delete') }}", {
                                 item_ids
                             })
                                 .then(response => {
@@ -199,9 +199,8 @@
                         }
 
                     } else if ($('#dropdown-action').val() == 'bulk-restore') {
-
                         if (item_ids.length > 0) {
-                            axios.post("{{ route('admin.product-category.bulk_restore') }}", {
+                            axios.post("{{ route('admin.product.bulk_restore') }}", {
                                 item_ids
                             })
                                 .then(response => {
@@ -211,11 +210,10 @@
                                 })
                                 .catch(error => console.log(error))
                         }
-
                     } else if ($('#dropdown-action').val() == 'bulk-active') {
 
                         if (item_ids.length > 0) {
-                            axios.post("{{ route('admin.product-category.bulk_active') }}", {
+                            axios.post("{{ route('admin.product.bulk_active') }}", {
                                 item_ids
                             })
                                 .then(response => {
@@ -229,7 +227,7 @@
                     } else if ($('#dropdown-action').val() == 'bulk-inactive') {
 
                         if (item_ids.length > 0) {
-                            axios.post("{{ route('admin.product-category.bulk_inactive') }}", {
+                            axios.post("{{ route('admin.product.bulk_inactive') }}", {
                                 item_ids
                             })
                                 .then(response => {
@@ -239,11 +237,8 @@
                                 })
                                 .catch(error => console.log(error))
                         }
-
                     }
-                })
-
-
+                });
             })
         })(jQuery)
     </script>

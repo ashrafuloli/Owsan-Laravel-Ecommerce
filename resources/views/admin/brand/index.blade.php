@@ -19,10 +19,12 @@
                                 <div class="form-inline">
                                     <div class="form-group mr-3">
                                         <select name="dropdown-action" id="dropdown-action" class="form-control">
-                                            <option>Select action</option>
-                                            <option value="bulk-delete">Delete</option>
-                                            <option value="bulk-force-delete">Permanent Delete</option>
-                                            <option value="bulk-restore">Restore</option>
+                                            <option>{{ __('Select Action') }}</option>
+                                            <option value="bulk-delete">{{ __('Delete') }}</option>
+                                            <option value="bulk-force-delete">{{ __('Permanent Delete') }}</option>
+                                            <option value="bulk-restore">{{ __('Restore') }}</option>
+                                            <option value="bulk-active">{{ __('Make active') }}</option>
+                                            <option value="bulk-inactive">{{ __('Make inactive') }}</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -121,6 +123,11 @@
                         </div>
                     @endif
                 </div>
+                <div class="card-footer text-right">
+                    <div class="d-inline-block">
+                        {{ $brands->links() }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -192,7 +199,6 @@
                         }
 
                     } else if ($('#dropdown-action').val() == 'bulk-restore') {
-
                         if (item_ids.length > 0) {
                             axios.post("{{ route('admin.brand.bulk_restore') }}", {
                                 item_ids
@@ -204,7 +210,33 @@
                                 })
                                 .catch(error => console.log(error))
                         }
+                    } else if ($('#dropdown-action').val() == 'bulk-active') {
 
+                        if (item_ids.length > 0) {
+                            axios.post("{{ route('admin.brand.bulk_active') }}", {
+                                item_ids
+                            })
+                                .then(response => {
+                                    if (response.data.message == 'success') {
+                                        window.location.href = window.location.href
+                                    }
+                                })
+                                .catch(error => console.log(error))
+                        }
+
+                    } else if ($('#dropdown-action').val() == 'bulk-inactive') {
+
+                        if (item_ids.length > 0) {
+                            axios.post("{{ route('admin.brand.bulk_inactive') }}", {
+                                item_ids
+                            })
+                                .then(response => {
+                                    if (response.data.message == 'success') {
+                                        window.location.href = window.location.href
+                                    }
+                                })
+                                .catch(error => console.log(error))
+                        }
                     }
                 });
             })

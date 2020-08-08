@@ -5,12 +5,7 @@ namespace App\Models\Admin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-/**
- * @property mixed description
- * @property mixed name
- * @property mixed status
- */
-class Brand extends Model
+class Product extends Model
 {
     use SoftDeletes;
 
@@ -26,20 +21,25 @@ class Brand extends Model
 
     public function setThumbnailAttribute($value)
     {
-        $this->attributes['thumbnail'] = 'uploads/images/product-brands/' . $value;
+        $this->attributes['thumbnail'] = 'uploads/images/products/' . $value;
     }
 
     public function getDefaultThumbnailAttribute()
     {
-        if ($this->thumbnail == null){
+        if ($this->thumbnail == null) {
             return 'assets/150.jpg';
         }
 
         return $this->thumbnail;
     }
 
-    public function products()
+    public function brand()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Brand::class);
+    }
+
+    public function product_category()
+    {
+        return $this->belongsTo(ProductCategory::class);
     }
 }

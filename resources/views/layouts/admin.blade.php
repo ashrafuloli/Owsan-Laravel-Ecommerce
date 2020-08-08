@@ -122,6 +122,33 @@
                         </ul>
                     </li>
 
+                    <li class="nav-item has-treeview {{ request()->routeIs('admin.product.*') ? 'menu-open' : '' }}">
+                        <a href="#"
+                           class="nav-link {{ request()->routeIs('admin.product.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            <p>
+                                Product
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('admin.product.index') }}"
+                                   class="nav-link {{ request()->routeIs('admin.product.index') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>All Product</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.product.create') }}"
+                                   class="nav-link {{ request()->routeIs('admin.product.create') ? 'active' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add New</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
 
                 </ul>
             </nav>
